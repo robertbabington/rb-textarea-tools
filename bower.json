@@ -1,0 +1,22 @@
+{
+  "name": "rb-textarea-tools",
+  "version": "0.0.1",
+  "authors": [
+    "Robert Babington <robertlbabington@gmail.com>"
+  ],
+  "description": "A light-weight set of tools for improving your textareas with AngularJS.",
+  "main": "index.html",
+  "keywords": [
+    "angularjs",
+    "textarea",
+    "dropdown"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
