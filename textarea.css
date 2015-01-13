@@ -1,0 +1,87 @@
+html body {
+    background-color: #e5e5e5;
+}
+
+#wrapper {
+    width: 100%;
+    padding: 20px;
+}
+
+#rb-textarea-wrapper {
+}
+
+#rb-textarea {
+    width: 350px;
+    border: 0;
+    border-bottom: 2px solid navy;
+    resize: none;
+}
+
+.rb-textarea-label {
+    height: 12px;
+    margin-bottom: 3px;
+}
+
+.rb-textarea-label p {
+    animation: fadein 0.3s;
+    -moz-animation: fadein 0.3s; /* Firefox */
+    -webkit-animation: fadein 0.3s; /* Safari and Chrome */
+    -o-animation: fadein 0.3s; /* Opera */
+}
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-moz-keyframes fadein { /* Firefox */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-o-keyframes fadein { /* Opera */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#rb-label {
+    margin: 0;
+    font-size: 9pt;
+    font-family: Helvetica;
+    color: navy;
+}
+
+#rb-list-wrapper {
+    width: 300px;
+    border: 1px solid orange;
+    background-color: white;
+    position: absolute;
+    margin:auto;
+}
+
+#rb-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.rb-list-item button:focus {
+    color:orange;
+}

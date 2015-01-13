@@ -1,0 +1,30 @@
+<!doctype html>
+<html ng-app="rbTextareaSettings">
+<head>
+    <title>rbTextareaSettings</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-animate.js"></script>
+    <script src="textarea.js"></script>
+    <link rel="stylesheet" href="textarea.css"/>
+</head>
+<body>
+
+    <div id="wrapper" ng-controller="myCtrl">
+
+        <rb-textarea
+
+                ng-model="myVariable"
+
+                rb-textarea-label="Enter your name..."
+
+                rb-textarea-autogrow
+                rb-max-rows="7"
+                rb-collapse="true"
+
+                rb-textarea-mentions="{{myList}}"
+                ></rb-textarea>
+
+    </div>
+
+</body>
+</html>
