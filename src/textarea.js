@@ -1,42 +1,88 @@
 var app = angular.module('rbTextareaSettings', []);
 
-app.controller('myCtrl', function($scope) {
-    $scope.myVariable = '';
+app.directive('rbTextareaLabel', function() {
 
-    $scope.myList = [
-        {text: 'Abcd'},
-        {text: 'Abbc'},
-        {text: 'Eadc'},
-        {text: 'Eabc'},
-        {text: 'Xaffa'}
-    ]
+    return {
+        restrict: 'A',
+        link: function(scope, elem, attrs) {
+
+            var label = elem;
+            var textarea = [];
+
+            function checkShowStatus() {
+                if(textarea[0].value.length > 0) {
+                    label.css('opacity', '1');
+                } else if(textarea[0].value.length <= 0) {
+                    label.css('opacity', '0');
+                }
+            }
+
+            attrs.$observe('for', function(result) {
+                textarea = angular.element('#' + result);
+                label.css('opacity', '0');
+
+                textarea.on('keypress keydown keyup', checkShowStatus);
+
+            });
+
+        }
+    }
+
 });
 
-app.directive('rbTextarea', function($timeout, rbTextareaService) {
+app.directive('rbTextareaAutogrow', function() {
+
+    return {
+        restrict: 'A',
+        link: function(scope, elem, attrs) {
+
+            var textarea = elem[0];
+            var defaultHeight = textarea.offsetHeight;
+            var maxRows = attrs.rbMaxRows ? Math.floor(Number(attrs.rbMaxRows)) : null;
+
+            function setTextareaHeight() {
+
+                textarea.style.height = 'auto';
+
+                var lineHeight = textarea.scrollHeight - textarea.offsetHeight;
+                var maxHeight = (maxRows != null) ? (maxRows * (defaultHeight/2)) : null;
+
+                var textareaHeight = (textarea.offsetHeight + (lineHeight > 0 ? lineHeight : 0));
+                if(maxRows != null && textareaHeight > maxHeight) {
+                    textareaHeight = maxHeight;
+                }
+                textarea.style.height = textareaHeight + 'px';
+            }
+
+            elem.on('keyup keydown keypress paste cut', setTextareaHeight);
+
+            elem.on('focus click', setTextareaHeight);
+
+            function collapse() {
+                if(attrs.rbCollapse != false) {
+                    textarea.style.height = defaultHeight + 'px';
+                }
+            };
+
+            elem.bind('blur', collapse);
+
+        }
+    }
+
+});
+
+
+app.directive('rbTextarea', function($sce, $timeout, rbTextareaService) {
 
     return {
         restrict: 'AE',
-        template:
-            '<div id="rb-textarea-wrapper">' +
-                '<div ng-if="rbTextareaCtrl.rbTextareaLabel" class="rb-textarea-label">' +
-                    '<p id="rb-label" ng-show="rbTextareaCtrl.ngModel">{{rbTextareaCtrl.rbTextareaLabel}}</p>' +
-                '</div>' +
-                '<textarea id="rb-textarea" ng-model="rbTextareaCtrl.ngModel" placeholder="{{rbTextareaCtrl.rbTextareaLabel}}"></textarea>' +
-                '<form id="rb-list-wrapper" ng-if="mentionsAreVisible">' +
-                    '<ul id="rb-list">' +
-                        '<li ng-repeat="item in rbTextareaCtrl.rbListItems | filter:rbTextareaCtrl.rbFilterSearch track by $index" class="rb-list-item">' +
-                            '<button ng-click="enterNodeTitle(item.text)">{{item.text}}</button>' +
-                        '</li>' +
-                    '</ul>' +
-                '</form>' +
-            '</div>'
-        ,
+        templateUrl:'../src/rb-textarea-tools.html',
         scope: {
             ngModel: '=',
             rbTextareaLabel: '@',
             rbTextareaMentions: '@'
         },
-        controller: function() {
+        controller: function($sce) {
 
             var rbTextareaCtrl = this;
 
@@ -53,10 +99,11 @@ app.directive('rbTextarea', function($timeout, rbTextareaService) {
             rbTextareaCtrl.rbListItems = this.rbTextareaMentions ? angular.fromJson(this.rbTextareaMentions) : [];
 
             rbTextareaCtrl.rbFilterSearch = '';
+            rbTextareaCtrl.renderedModel = $sce.trustAsHtml(this.ngModel);
         },
         controllerAs: 'rbTextareaCtrl',
         bindToController: true,
-        link: function(scope, elem, attrs) {
+        link: function(scope, elem, attrs, ctrl) {
 
             var textarea = document.getElementById('rb-textarea');
             var list, listLength, listItem, stringVal, lastKeyIdx, lastCharTyped, filterSearch;
@@ -107,19 +154,13 @@ app.directive('rbTextarea', function($timeout, rbTextareaService) {
                         listItem = list.children[currentListItem].children[0];
 
                         if(listItem.hasOwnProperty('isFocused')) {
-                            /**
-                             * If the 'previous' item's index is not within the length of the list
-                             * then focus on the input field and delete the 'isFocused' property from the dropdown
-                             */
+
                             if((currentListItem-1) < 0) {
                                 $timeout(function() {
                                     textarea.focus();
                                     textarea.setSelectionRange(lastKeyIdx, lastKeyIdx);
                                 });
                                 delete listItem.isFocused;
-                                /**
-                                 * or else focus on the preview list item.
-                                 */
                             } else {
                                 currentListItem = (currentListItem-1);
                                 listItem = list.children[currentListItem].children[0];
@@ -154,6 +195,26 @@ app.directive('rbTextarea', function($timeout, rbTextareaService) {
                         });
 
                         lastKeyIdx = textarea.selectionStart;
+
+                    }
+
+                    var testdiv = document.getElementById('testdiv');
+
+                    scope.rbTextareaCtrl.renderedModel = $sce.trustAsHtml(
+                        scope.rbTextareaCtrl.ngModel
+                    );
+
+                    var replaceText;
+                    //var replaceRegExp;
+                    var testText;
+                    for(var result in ctrl['rbListItems']) {
+                        replaceText = ctrl['rbListItems'][result]['text'];
+
+                        var replaceRegExp = new RegExp('@' + replaceText, 'g');
+
+                        testText = scope.rbTextareaCtrl.renderedModel.toString().replace(replaceRegExp, '<span style="background:red">@' + replaceText + '</span>')
+
+                        scope.rbTextareaCtrl.renderedModel = $sce.trustAsHtml(testText);
 
                     }
 
@@ -239,76 +300,5 @@ app.service('rbTextareaService', function() {
          */
         return str.substr(0, idx) + item + str.substr(secondIdx);
     };
-
-});
-
-app.directive('rbTextareaAutogrow', function() {
-
-    return {
-        restrict: 'A',
-        link: function(scope, elem, attrs) {
-
-            var textarea = elem.find('textarea');
-
-            elem.css('height', 'auto');
-
-            /**
-             * maxRows sets the height limit to which the textarea can grow.
-             * If rbMaxRows is set as an attribute of the textarea
-             * then its value is assigned to maxRows;
-             * otherwise maxRows is equal to 5.
-             */
-
-            var maxRows = attrs.rbMaxRows ? Math.floor(Number(attrs.rbMaxRows)) : 5;
-
-            /**
-             * Textareas have an outer height and an inner height.
-             * Use scrollHeight to determin the height of a row.
-             * Textareas have 2 rows by default, therefore we
-             * calculate the rowHeight to be the scrollHeight divided by 2.
-             */
-            var rowHeight = (textarea[0].scrollHeight / 2);
-            var setRows = function() {
-
-                textarea[0].setAttribute('rows', '2');
-
-                var newRows = Math.floor(textarea[0].scrollHeight / rowHeight);
-                /**
-                 * If the inner number of rows is less than 2,
-                 * then set the number of rows to 2.
-                 * Else if the number of rows is greater than
-                 * the height of the textarea, update the height.
-                 */
-                if(newRows < 2) {
-                    newRows = 2;
-                } else if(newRows > maxRows) {
-                    newRows = maxRows;
-                }
-
-                textarea[0].setAttribute('rows', newRows);
-
-            };
-
-            elem.on('keyup keydown keypress paste cut', setRows);
-
-            elem.on('focus', setRows);
-
-            /**
-             * If rbCollapse is set to true,
-             * collapse the textarea when somebody clicks out of it.
-             */
-            var collapse = function() {
-
-                if(attrs.rbCollapse != false) {
-
-                    textarea[0].setAttribute('rows', '2');
-
-                }
-            };
-
-            textarea.bind('blur', collapse);
-
-        }
-    }
 
 });

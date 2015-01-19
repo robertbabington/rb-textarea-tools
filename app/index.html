@@ -1,0 +1,84 @@
+<!doctype html>
+<html ng-app="rbTextareaSettings">
+<head>
+    <title>rbTextareaSettings</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-animate.js"></script>
+
+    <script src="../src/textarea.js"></script>
+
+    <script src="controller.js"></script>
+</head>
+<body ng-controller="myCtrl">
+
+    <h1>rb-textarea-tools</h1>
+
+    <div class="card">
+        <label rb-textarea-label for="example">Username</label>
+        <textarea placeholder="Username" id="example" ng-model="myVariable"
+
+                  rb-textarea-autogrow
+                  rb-max-rows="7"
+                  rb-collapse="true"
+                >
+        </textarea>
+    </div>
+
+    <style>
+
+        /**
+           Based on Google's Material Design.
+           Replace with personal styling.
+        */
+
+        html body {
+            background-color: #e9e9e9;
+            padding: 5px 20px;
+        }
+
+        h1 {
+            margin: 10px 0;
+            padding: 0;
+            font-family: Helvetica;
+        }
+
+        .card {
+            width: 300px;
+            height: auto;
+            min-height: 100px;
+            background-color: white;
+            padding: 15px 10px;
+            border-radius:3px;
+            box-shadow:0 1px 2px #aaa;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0;
+            border: 0;
+            border-bottom: 2px solid #FF5722;
+            resize: none;
+            background: transparent;
+            -moz-appearance:none;
+            outline:0px none;
+            line-height:1em;
+            font-family:Helvetica;
+            font-size: 12pt;
+        }
+
+        textarea:focus {
+            outline: 0;
+        }
+
+        label {
+            margin: 0;
+            font-family: Helvetica;
+            font-size: 8pt;
+            color: #FF5722;
+        }
+
+    </style>
+
+</body>
+</html>
