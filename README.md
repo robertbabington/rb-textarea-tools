@@ -16,7 +16,11 @@ You can install using bower: `bower install --save rb-textarea-tools`
 
 **rb-textarea-label** is used to bind a label to a textarea. If the value of the textarea is greater than 0, the label appears.
 
-**Usage:** `<label rb-textarea-label for="example">Username</label>`
+**Usage:** 
+
+````html
+<label rb-textarea-label for="example">Username</label>
+````
 
 ### Autogrow
 
