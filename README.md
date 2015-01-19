@@ -29,7 +29,8 @@ You can install using bower: `bower install --save rb-textarea-tools`
 **Usage:** 
 
 ````html
-<textarea placeholder="Username" id="example" ng-model="myVariable" rb-textarea-autogrow rb-max-rows="7" rb-collapse="true"></textarea>
+<textarea placeholder="Username" id="example" ng-model="myVariable" 
+rb-textarea-autogrow rb-max-rows="7" rb-collapse="true"></textarea>
 ````
 
 ### Mentions
