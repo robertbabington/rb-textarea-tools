@@ -26,7 +26,11 @@ You can install using bower: `bower install --save rb-textarea-tools`
 
 **rb-collapse (optional)** is a boolean which determins is a textarea returns to default height when it loses focus.
 
-**Usage:** `<textarea placeholder="Username" id="example" ng-model="myVariable" rb-textarea-autogrow rb-max-rows="7" rb-collapse="true"></textarea>`
+**Usage:** 
+
+````html
+<textarea placeholder="Username" id="example" ng-model="myVariable" rb-textarea-autogrow rb-max-rows="7" rb-collapse="true"></textarea>
+````
 
 ### Mentions
 ** NOT FUNCTIONAL **
@@ -43,5 +47,5 @@ The following will be added in due course:
 
 ## Acknowledgements
 
-- Styling in the example is inspired by Google's Material Design, which I highly recommend checking out;
-- For a more robust mentions system, check out 
+- Styling in the example is inspired by Google's Material Design, which I highly recommend checking out: http://material.angularjs.org/
+- For a more robust mentions system, check out Ment.io: https://github.com/jeff-collins/ment.io
