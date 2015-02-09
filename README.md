@@ -38,9 +38,27 @@ rb-textarea-autogrow rb-max-rows="7" rb-collapse="true"></textarea>
 ````
 
 ### Mentions
-** NOT FUNCTIONAL **
+** PARTIAL FUNCTIONALITY **
 
-Mentions work in a limited capacity at the moment, but will be built in the Facebook style.
+Mentions work in a limited capacity at the moment, but will be built in the Facebook style which includes mentions highlighting.
+
+**rb-items (required)** interpolates a set of data to loop through. At the moment data items must be called "text", e.g.
+````javascript
+var myArray = [{text:"Bob"}, {text:"Joey"}];
+````
+
+**rb-for (required)** binds the dropdown menu to the ID of a textarea.
+
+**Usage:**
+
+````html
+<rb-textarea-mentions
+    rb-items="{{myList}}"
+    rb-for="example"
+    ng-model="myVariable"
+    >
+</rb-textarea-mentions>
+````
 
 ## To-do
 
