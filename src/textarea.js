@@ -1,10 +1,10 @@
-var app = angular.module('rbTextareaSettings', []);
+angular.module('rbTextareaSettings', [])
 
-app.directive('rbTextareaLabel', function() {
+.directive('rbTextareaLabel', function() {
 
     return {
         restrict: 'A',
-        link: function(scope, elem, attrs) {
+        link: function(ctrl, elem, attrs) {
 
             var label = elem;
             var textarea = [];
@@ -18,6 +18,7 @@ app.directive('rbTextareaLabel', function() {
             }
 
             attrs.$observe('for', function(result) {
+
                 textarea = angular.element('#' + result);
                 label.css('opacity', '0');
 
@@ -28,13 +29,13 @@ app.directive('rbTextareaLabel', function() {
         }
     }
 
-});
+})
 
-app.directive('rbTextareaAutogrow', function() {
+.directive('rbTextareaAutogrow', function() {
 
     return {
         restrict: 'A',
-        link: function(scope, elem, attrs) {
+        link: function(ctrl, elem, attrs) {
 
             var textarea = elem[0];
             var defaultHeight = textarea.offsetHeight;
@@ -69,174 +70,173 @@ app.directive('rbTextareaAutogrow', function() {
         }
     }
 
-});
+})
 
 
-app.directive('rbTextarea', function($sce, $timeout, rbTextareaService) {
+.directive('rbTextareaMentions', function($sce, $timeout, rbTextareaService) {
 
     return {
-        restrict: 'AE',
+        restrict: 'E',
         templateUrl:'../src/rb-textarea-tools.html',
         scope: {
             ngModel: '=',
-            rbTextareaLabel: '@',
-            rbTextareaMentions: '@'
+            rbItems: '@'
         },
         controller: function($sce) {
 
             var rbTextareaCtrl = this;
 
             /**
-             * If the label exists, its value is set to the value of this.rbTextareaLabel.
-             * Otherwise it is set to an empty string.
-             */
-            rbTextareaCtrl.rbTextareaLabel = this.rbTextareaLabel ? this.rbTextareaLabel : ' ';
-
-            /**
              * If rbTextareaMentions exists, its value is appended to rbTextareaCtrl.rbListItems.
              * Otherwise, it's an empty array.
              */
-            rbTextareaCtrl.rbListItems = this.rbTextareaMentions ? angular.fromJson(this.rbTextareaMentions) : [];
+            rbTextareaCtrl.rbListItems = this.rbItems ? angular.fromJson(this.rbItems) : [];
 
             rbTextareaCtrl.rbFilterSearch = '';
-            rbTextareaCtrl.renderedModel = $sce.trustAsHtml(this.ngModel);
+
         },
         controllerAs: 'rbTextareaCtrl',
         bindToController: true,
         link: function(scope, elem, attrs, ctrl) {
 
-            var textarea = document.getElementById('rb-textarea');
-            var list, listLength, listItem, stringVal, lastKeyIdx, lastCharTyped, filterSearch;
+            var textarea,
+                list,
+                listLength,
+                listItem,
+                stringVal,
+                lastKeyIdx,
+                lastCharTyped,
+                filterSearch;
 
             var currentListItem = 0;
 
-            scope.mentionsAreVisible = false;
+            if(attrs.rbFor && attrs.rbFor.length > 0) {
+                textarea = angular.element('#' + attrs.rbFor);
+            } else {
+                console.error('No textarea ID found.')
+            }
 
-            elem.on('keydown', function(e) {
-                if(scope.rbTextareaCtrl.rbTextareaMentions) {
+            list = angular.element('#rb-list');
 
-                    if(e.keyCode == 8 && scope.mentionsAreVisible == true && lastCharTyped == '@') {
+            ctrl.mentionsAreVisible = false;
+
+            textarea.on('keydown', function(e) {
+
+                if(ctrl.rbItems) {
+
+                    if(e.keyCode == 8 && ctrl.mentionsAreVisible == true && lastCharTyped == '@') {
 
                         $timeout(function () {
-                            scope.mentionsAreVisible = false;
+                            ctrl.mentionsAreVisible = false;
                         });
 
-                    } else if(e.keyCode == 40 && scope.mentionsAreVisible == true) {
+                    } else if(e.keyCode == 40 && ctrl.mentionsAreVisible == true) {
+                        list = angular.element('#rb-list');
+                        listLength = list[0].children.length;
+                        listItem = list[0].children[currentListItem].children[0];
 
-                        list = document.getElementById('rb-list');
-                        listLength = list.children.length;
-                        listItem = list.children[currentListItem].children[0];
+                        $timeout(function() {
+                            listItem.focus();
+                            listItem.isFocused = true;
+                        });
 
-                        if(listItem.hasOwnProperty('isFocused')) {
-
-                            if((currentListItem+1) > (listLength-1)) {
-                                currentListItem = 0;
-                            } else {
-                                currentListItem = (currentListItem+1);
-                            }
-
-                            listItem = list.children[currentListItem].children[0];
-                            $timeout(function() {
-                                listItem.focus();
-                                listItem.isFocused = true;
-                            });
-
-                        } else {
-                            $timeout(function() {
-                                listItem.focus();
-                                listItem.isFocused = true;
-                            });
-                        }
-
-                    } else if(e.keyCode == 38 && scope.mentionsAreVisible == true) {
-                        list = document.getElementById('rb-list');
-                        listLength = list.children.length;
-                        listItem = list.children[currentListItem].children[0];
-
-                        if(listItem.hasOwnProperty('isFocused')) {
-
-                            if((currentListItem-1) < 0) {
-                                $timeout(function() {
-                                    textarea.focus();
-                                    textarea.setSelectionRange(lastKeyIdx, lastKeyIdx);
-                                });
-                                delete listItem.isFocused;
-                            } else {
-                                currentListItem = (currentListItem-1);
-                                listItem = list.children[currentListItem].children[0];
-                                $timeout(function() {
-                                    listItem.focus();
-                                    listItem.isFocused = true;
-                                });
-                            }
-                        }
                     }
 
                 }
             });
 
-            elem.on('keyup', function() {
-                if(scope.rbTextareaCtrl.rbTextareaMentions) {
+            elem.on('keydown', function(e) {
+                if(e.keyCode == 40 && ctrl.mentionsAreVisible == true) {
 
-                    stringVal = textarea.value;
-                    lastCharTyped = stringVal.substr(textarea.selectionStart-1, 1);
+                    if(listItem.hasOwnProperty('isFocused')) {
+
+                        if((currentListItem+1) > (listLength-1)) {
+                            currentListItem = 0;
+                        } else {
+                            currentListItem = (currentListItem+1);
+                        }
+
+                        listItem = list[0].children[currentListItem].children[0];
+                        $timeout(function() {
+                            listItem.focus();
+                            listItem.isFocused = true;
+                        });
+
+                    }
+
+                } else if(e.keyCode == 38 && ctrl.mentionsAreVisible == true) {
+                    list = angular.element('#rb-list');
+                    listLength = list[0].children.length;
+                    listItem = list[0].children[currentListItem].children[0];
+
+                    if(listItem.hasOwnProperty('isFocused')) {
+
+                        if((currentListItem-1) < 0) {
+                            $timeout(function() {
+                                textarea[0].focus();
+                                textarea[0].setSelectionRange(lastKeyIdx, lastKeyIdx);
+                            });
+                            delete listItem.isFocused;
+                        } else {
+                            currentListItem = (currentListItem-1);
+                            listItem = list[0].children[currentListItem].children[0];
+                            $timeout(function() {
+                                listItem.focus();
+                                listItem.isFocused = true;
+                            });
+                        }
+                    }
+                }
+            });
+
+            textarea.on('keyup', function() {
+                if(ctrl.rbItems) {
+
+                    stringVal = textarea[0].value;
+                    lastCharTyped = stringVal.substr(textarea[0].selectionStart-1, 1);
                     var secondLastCharTyped = stringVal.substr(lastKeyIdx-1, 1);
 
                     if(secondLastCharTyped == '@' && lastCharTyped.indexOf(' ') >= 0) {
 
                         $timeout(function() {
-                            scope.mentionsAreVisible = false;
+                            ctrl.mentionsAreVisible = false;
                         });
 
-                    } else if(lastCharTyped == '@' && scope.mentionsAreVisible != true) {
+                    } else if(lastCharTyped == '@' && ctrl.mentionsAreVisible != true) {
 
                         $timeout(function() {
-                            scope.mentionsAreVisible = true;
+                            ctrl.mentionsAreVisible = true;
                         });
 
-                        lastKeyIdx = textarea.selectionStart;
-
-                    }
-
-                    var testdiv = document.getElementById('testdiv');
-
-                    scope.rbTextareaCtrl.renderedModel = $sce.trustAsHtml(
-                        scope.rbTextareaCtrl.ngModel
-                    );
-
-                    var replaceText;
-                    //var replaceRegExp;
-                    var testText;
-                    for(var result in ctrl['rbListItems']) {
-                        replaceText = ctrl['rbListItems'][result]['text'];
-
-                        var replaceRegExp = new RegExp('@' + replaceText, 'g');
-
-                        testText = scope.rbTextareaCtrl.renderedModel.toString().replace(replaceRegExp, '<span style="background:red">@' + replaceText + '</span>')
-
-                        scope.rbTextareaCtrl.renderedModel = $sce.trustAsHtml(testText);
+                        lastKeyIdx = textarea[0].selectionStart;
 
                     }
 
                     filterSearch = rbTextareaService.getNewFilter(stringVal, lastKeyIdx);
                     $timeout(function() {
-                        scope.rbTextareaCtrl.rbFilterSearch = filterSearch;
+                        ctrl.rbFilterSearch = filterSearch;
                     })
 
 
                 }
             });
 
-            scope.enterNodeTitle = function(item) {
-                var newStringVal = rbTextareaService.newInputModelAsString(stringVal, lastKeyIdx, item, filterSearch);
+            ctrl.enterNodeTitle = function(item) {
+                var newStringVal = rbTextareaService.newInputModelAsString(
+                    stringVal,
+                    lastKeyIdx,
+                    item,
+                    filterSearch
+                );
                 /**
                  * Update the model with the new string.
                  */
                 $timeout(function() {
-                    scope.ngModel = newStringVal;
-                    textarea.value = newStringVal;
-                    scope.mentionsAreVisible = false;
-                    textarea.focus();
+                    ctrl.ngModel = newStringVal;
+                    textarea[0].value = newStringVal;
+                    ctrl.mentionsAreVisible = false;
+                    textarea[0].focus();
+                    textarea[0].selectionStart = lastKeyIdx+item.length+1;
                 });
                 /**
                  * Reset the defaults.
@@ -249,9 +249,9 @@ app.directive('rbTextarea', function($sce, $timeout, rbTextareaService) {
         }
     }
 
-});
+})
 
-app.service('rbTextareaService', function() {
+.service('rbTextareaService', function() {
 
     var rbTextareaService = this;
 
@@ -269,7 +269,7 @@ app.service('rbTextareaService', function() {
          */
         if(refinedValArray != null) {
             /**
-             * Assign the second array value to 'scope.filterSearch'
+             * Assign the second array value to 'ctrl.filterSearch'
              * and apply the filter to the list
              */
             filterSearch = refinedValArray[1];
@@ -302,3 +302,28 @@ app.service('rbTextareaService', function() {
     };
 
 });
+
+
+
+/*var testdiv = document.getElementById('testdiv');
+
+ ctrl.renderedModel = $sce.trustAsHtml(
+ ctrl.ngModel
+ );
+
+ var replaceText;
+ //var replaceRegExp;
+ var testText;
+ for(var result in ctrl['rbListItems']) {
+ replaceText = ctrl['rbListItems'][result]['text'];
+
+ var replaceRegExp = new RegExp('@' + replaceText, 'g');
+
+ testText = ctrl.renderedModel.toString().replace(
+ replaceRegExp,
+ '<span style="background:red">@' + replaceText + '</span>'
+ );
+
+ ctrl.renderedModel = $sce.trustAsHtml(testText);
+
+ }*/

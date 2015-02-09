@@ -1,25 +1,15 @@
-<div id="rb-textarea-wrapper">
+<div id="rb-textarea-wrapper" ng-if="rbTextareaCtrl.mentionsAreVisible">
 
-    <div ng-if="rbTextareaCtrl.rbTextareaLabel" class="rb-textarea-label">
-
-        <p id="rb-label" ng-show="rbTextareaCtrl.ngModel">{{rbTextareaCtrl.rbTextareaLabel}}</p>
-
-    </div>
-
-    <div class="underlay-div" id="testdiv" >
-
-        <span ng-bind-html="rbTextareaCtrl.renderedModel"></span>
-        <textarea id="rb-textarea" ng-model="rbTextareaCtrl.ngModel" placeholder="{{rbTextareaCtrl.rbTextareaLabel}}"></textarea>
-
-    </div>
-
-    <form id="rb-list-wrapper" ng-if="mentionsAreVisible">
+    <form id="rb-list-wrapper">
 
         <ul id="rb-list">
 
-            <li ng-repeat="item in rbTextareaCtrl.rbListItems | filter:rbTextareaCtrl.rbFilterSearch track by $index" class="rb-list-item">
+            <li
+                    ng-repeat="item in rbTextareaCtrl.rbListItems | filter:rbTextareaCtrl.rbFilterSearch track by $index"
+                    class="rb-list-item"
+                    >
 
-                <button ng-click="enterNodeTitle(item.text)">{{item.text}}</button>
+                <button ng-click="rbTextareaCtrl.enterNodeTitle(item.text)">{{item.text}}</button>
 
             </li>
 

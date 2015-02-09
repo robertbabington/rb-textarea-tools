@@ -15,21 +15,35 @@
     <h1>rb-textarea-tools</h1>
 
     <div class="card">
-        <label rb-textarea-label for="example">Username</label>
-        <textarea placeholder="Username" id="example" ng-model="myVariable"
 
-                  rb-textarea-autogrow
-                  rb-max-rows="7"
-                  rb-collapse="true"
+        <label rb-textarea-label for="example">Username</label>
+
+        <textarea
+                placeholder="Username"
+                id="example"
+
+                ng-model="myVariable"
+
+                rb-textarea-autogrow
+                rb-max-rows="7"
+                rb-collapse="true"
                 >
         </textarea>
+
+        <rb-textarea-mentions
+                rb-items="{{myList}}"
+                rb-for="example"
+                ng-model="myVariable"
+                >
+        </rb-textarea-mentions>
+
     </div>
 
     <style>
 
         /**
            Based on Google's Material Design.
-           Replace with personal styling.
+           Replace/override with personal styling.
         */
 
         html body {
