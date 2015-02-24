@@ -16,7 +16,7 @@
 
     <div class="card">
 
-        <label rb-textarea-label for="example">Username</label>
+        <label class="rb-label" rb-textarea-label for="example">Username</label>
 
         <textarea
                 placeholder="Username"
@@ -90,6 +90,53 @@
             font-family: Helvetica;
             font-size: 8pt;
             color: #FF5722;
+        }
+
+        .rb-label {
+            opacity: 0;
+        }
+
+        .rb-label-after {
+            transition: all 1s linear;
+            opacity: 1;
+        }
+
+        #rb-list-wrapper {
+            width: 80%;
+            max-width: 300px;
+            margin: auto;
+            position: relative;
+        }
+
+        #rb-list {
+            width: 100%;
+            margin: auto;
+            padding: 0;
+            background-color: #ffffff;
+            border-radius:3px;
+            box-shadow:0 1px 2px #aaa;
+            list-style-type: none;
+            position: absolute;
+        }
+
+        #rb-list li {
+            width: 100%;
+            height: auto;
+        }
+
+        #rb-list li button {
+            width: 100%;
+            margin: 1px;
+            padding: 3px 5px;
+            border: 0;
+            outline: none;
+            background-color: #ffffff;
+            font-size: 16px;
+        }
+
+        #rb-list li button:focus {
+            background-color: #FF5722;
+            color: white;
         }
 
     </style>

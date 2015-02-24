@@ -1,20 +1,16 @@
-<div id="rb-textarea-wrapper" ng-if="rbTextareaCtrl.mentionsAreVisible">
+<form id="rb-list-wrapper" ng-if="rbTextareaCtrl.mentionsAreVisible">
 
-    <form id="rb-list-wrapper">
+    <ul id="rb-list">
 
-        <ul id="rb-list">
+        <li
+                ng-repeat="item in rbTextareaCtrl.rbListItems | filter:rbTextareaCtrl.rbFilterSearch track by $index"
+                class="rb-list-item"
+                >
 
-            <li
-                    ng-repeat="item in rbTextareaCtrl.rbListItems | filter:rbTextareaCtrl.rbFilterSearch track by $index"
-                    class="rb-list-item"
-                    >
+            <button ng-click="rbTextareaCtrl.enterNodeTitle(item.text)">{{item.text}}</button>
 
-                <button ng-click="rbTextareaCtrl.enterNodeTitle(item.text)">{{item.text}}</button>
+        </li>
 
-            </li>
+    </ul>
 
-        </ul>
-
-    </form>
-
-</div>
+</form>

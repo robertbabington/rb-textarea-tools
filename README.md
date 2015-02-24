@@ -14,7 +14,7 @@ You can install using bower: `bower install --save rb-textarea-tools`
 
 ### Floating labels
 
-**rb-textarea-label** is used to bind a label to a textarea. If the value of the textarea is greater than 0, the label appears.
+**rb-textarea-label** is used to bind a label to a textarea. If the length of the value of the textarea is greater than 0, the label appears.
 
 **Usage:** 
 
@@ -63,10 +63,9 @@ var myArray = [{text:"Bob"}, {text:"Joey"}];
 ## To-do
 
 The following will be added in due course:
-- Add animation to label
-- Set standard appearance of dropdown list for mentions
-- Improve overall functionality of mentions
-- Build word highlighting for mentions
+- Animation on label
+- Improved overall functionality of mentions
+- Word highlighting for mentions
 
 ## Acknowledgements
 

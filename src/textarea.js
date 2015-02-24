@@ -1,6 +1,6 @@
 angular.module('rbTextareaSettings', [])
 
-.directive('rbTextareaLabel', function() {
+.directive('rbTextareaLabel', function($animate) {
 
     return {
         restrict: 'A',
@@ -11,16 +11,21 @@ angular.module('rbTextareaSettings', [])
 
             function checkShowStatus() {
                 if(textarea[0].value.length > 0) {
-                    label.css('opacity', '1');
+                    console.log('123');
+                    label.removeClass('rb-label');
+                    $animate.addClass(label, 'rb-label-after', null);
+                    //label.css('opacity', '1');
                 } else if(textarea[0].value.length <= 0) {
-                    label.css('opacity', '0');
+                    label.removeClass('rb-label-after');
+                    $animate.addClass(label, 'rb-label', null);
+                    //label.css('opacity', '0');
                 }
             }
 
             attrs.$observe('for', function(result) {
 
                 textarea = angular.element('#' + result);
-                label.css('opacity', '0');
+                //label.css('opacity', '0');
 
                 textarea.on('keypress keydown keyup', checkShowStatus);
 
@@ -79,10 +84,9 @@ angular.module('rbTextareaSettings', [])
         restrict: 'E',
         templateUrl:'../src/rb-textarea-tools.html',
         scope: {
-            ngModel: '=',
             rbItems: '@'
         },
-        controller: function($sce) {
+        controller: function() {
 
             var rbTextareaCtrl = this;
 
@@ -228,19 +232,15 @@ angular.module('rbTextareaSettings', [])
                     item,
                     filterSearch
                 );
-                /**
-                 * Update the model with the new string.
-                 */
+
                 $timeout(function() {
-                    ctrl.ngModel = newStringVal;
+                    //ctrl.ngModel = newStringVal;
                     textarea[0].value = newStringVal;
                     ctrl.mentionsAreVisible = false;
                     textarea[0].focus();
                     textarea[0].selectionStart = lastKeyIdx+item.length+1;
                 });
-                /**
-                 * Reset the defaults.
-                 */
+
                 stringVal = '';
                 lastKeyIdx = '';
                 currentListItem = 0;
